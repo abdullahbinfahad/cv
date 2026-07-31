@@ -16,9 +16,47 @@
             font-size: 13px;
             padding: 20px;
             min-height: 100vh;
+            overflow: hidden; /* Prevent scroll until password is entered */
         }
+        body.unlocked { overflow: auto; }
 
         @page { size: A4; margin: 0.5in; }
+
+        /* --- PASSWORD OVERLAY --- */
+        #passwordOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 20, 0.95);
+            z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(8px);
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #passwordOverlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .password-box {
+            background: white; padding: 40px; border-radius: 16px;
+            width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .password-box h2 { font-size: 1.5rem; color: #2c3e50; margin-bottom: 10px; }
+        .password-box p { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px; }
+        .password-input-wrap {
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;
+        }
+        .password-input-wrap input {
+            flex: 1; padding: 12px 16px; border: 2px solid #ecf0f1;
+            border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; min-width: 150px;
+        }
+        .password-input-wrap input:focus { border-color: #c03; }
+        .password-input-wrap button {
+            background: #c03; color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;
+            transition: 0.3s;
+        }
+        .password-input-wrap button:hover { background: #a00; transform: translateY(-2px); }
+        .password-box .lock-icon { font-size: 3rem; color: #c03; margin-bottom: 15px; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Main Wrapper for Language Switching */
         .lang-wrapper {
@@ -54,7 +92,7 @@
         .print-button:hover { background: #a00; transform: translateY(-3px); }
         .action-button i { margin-right: 8px; }
 
-        @media print { .action-button { display: none !important; } body { background: white; padding: 0; } }
+        @media print { .action-button { display: none !important; } body { background: white; padding: 0; overflow: visible; } }
 
         /* Decorative Elements */
         .decoration-element { position: absolute; z-index: 0; opacity: 0.05; font-size: 90px; color: #c03; font-family: 'Times New Roman', serif; }
@@ -138,6 +176,19 @@
 </head>
 <body>
     
+    <!-- PASSWORD PROTECTION OVERLAY -->
+    <div id="passwordOverlay">
+        <div class="password-box">
+            <div class="lock-icon"><i class="fas fa-lock"></i></div>
+            <h2>Protected Page</h2>
+            <p>Enter the password to view Abdullah Bin Fahad's CV.</p>
+            <div class="password-input-wrap">
+                <input type="password" id="passwordInput" placeholder="Enter password...">
+                <button onclick="checkPassword()">Unlock</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Floating Buttons -->
     <button class="action-button print-button" onclick="window.print()">
         <i class="fas fa-print"></i> Print CV
@@ -205,16 +256,17 @@
                 <div class="main-section">
                     <h2><i class="fas fa-graduation-cap"></i> Education</h2>
                     <div class="education-item"><div class="education-header"><div class="education-degree">BSc in Automation Engineering</div><div class="education-date">2025 – 2029 (Expected)</div></div><div class="education-institution">Nanjing Tech University, China</div><div class="education-result">Freshman Scholarship Awardee</div><div class="education-subjects"><strong>Core:</strong> Control Systems, Robotics, PLC, Sensors, C/C++</div></div>
-                    <div class="education-item"><div class="education-header"><div class="education-degree">Higher Secondary Certificate (Science)</div><div class="education-date">2022 – 2024</div></div><div class="education-institution">Bhola Government College, Bangladesh</div><div class="education-result"></div></div>
-                    <div class="education-item"><div class="education-header"><div class="education-degree">Secondary School Certificate (Science)</div><div class="education-date">2020 – 2022</div></div><div class="education-institution">Dhaligour Nagar Secondary School, Bangladesh</div><div class="education-result"></div></div>
+                    <div class="education-item"><div class="education-header"><div class="education-degree">Higher Secondary Certificate (Science)</div><div class="education-date">2022 – 2024</div></div><div class="education-institution">Bhola Government College, Bangladesh</div><div class="education-result">GPA: 4.58/5.00</div></div>
+                    <div class="education-item"><div class="education-header"><div class="education-degree">Secondary School Certificate (Science)</div><div class="education-date">2020 – 2022</div></div><div class="education-institution">Dhaligour Nagar Secondary School, Bangladesh</div><div class="education-result">GPA: 5.00/5.00</div></div>
                 </div>
                 <div class="main-section">
                     <h2><i class="fas fa-trophy"></i> Key Achievements</h2>
-                    <div class="achievement-item"><div class="achievement-title">Author & Philosopher</div><div class="achievement-desc">Authored "Moral Values", synthesizing 3 ethical frameworks into a 500‑page manuscript.</div></div>
-                    <div class="achievement-item"><div class="achievement-title">Public Speaker & Mentor</div><div class="achievement-desc">Delivered 15+ moral seminars, reaching 500+ attendees (95% positive feedback).</div></div>
-                    <div class="achievement-item"><div class="achievement-title">Automation Innovator</div><div class="achievement-desc">Designed an automation prototype reducing lab process time by 30%.</div></div>
-                    <div class="achievement-item"><div class="achievement-title">Cultural Ambassador</div><div class="achievement-desc">Volunteered 100+ hours in cultural exchange, presenting Bangladeshi heritage to 200+ visitors.</div></div>
-                    <div class="achievement-item"><div class="achievement-title">Tech Showcase Organizer</div><div class="achievement-desc">Organized IoT‑based home automation demo at Science Fair (300+ students/faculty).</div></div>
+                    <!-- UPDATED ACHIEVEMENTS SECTION -->
+                    <div class="achievement-item"><div class="achievement-title">Writer</div><div class="achievement-desc">Authored multiple short stories and novels, creating original fictional narratives and creative works.</div></div>
+                    <div class="achievement-item"><div class="achievement-title">Speaker & Mentor</div><div class="achievement-desc">Delivered 15+ seminars on ethics and moral values, engaging over 500 participants.</div></div>
+                    <div class="achievement-item"><div class="achievement-title">Automation Project Experience</div><div class="achievement-desc">Participated in multiple automation projects and gained hands-on experience in embedded systems, automation technologies, and independent engineering projects.</div></div>
+                    <div class="achievement-item"><div class="achievement-title">Cultural Volunteer</div><div class="achievement-desc">Contributed 100+ hours to cultural exchange activities, introducing Bangladeshi heritage to more than 200 visitors.</div></div>
+                    <div class="achievement-item"><div class="achievement-title">Technology Event Organizer</div><div class="achievement-desc">Organized an IoT-based home automation demonstration at a science fair for 300+ students and faculty members.</div></div>
                 </div>
                 <div class="main-section">
                     <h2><i class="fas fa-code-branch"></i> Featured Projects</h2>
@@ -301,11 +353,12 @@
                 </div>
                 <div class="main-section">
                     <h2><i class="fas fa-trophy"></i> 主要成就</h2>
-                    <div class="achievement-item"><div class="achievement-title">作家与哲学家</div><div class="achievement-desc">撰写《道德价值观》，将3种伦理框架综合成500页手稿。</div></div>
-                    <div class="achievement-item"><div class="achievement-title">公共演讲者与导师</div><div class="achievement-desc">举办了15场以上道德研讨会，影响500多名听众（95%积极反馈）。</div></div>
-                    <div class="achievement-item"><div class="achievement-title">自动化创新者</div><div class="achievement-desc">设计自动化原型，将实验室流程时间缩短30%。</div></div>
-                    <div class="achievement-item"><div class="achievement-title">文化大使</div><div class="achievement-desc">志愿服务100+小时进行文化交流，向200多名访客展示孟加拉国文化遗产。</div></div>
-                    <div class="achievement-item"><div class="achievement-title">科技展示组织者</div><div class="achievement-desc">在科技博览会上组织物联网智能家居演示，吸引300多名学生和教职员工。</div></div>
+                    <!-- UPDATED CHINESE ACHIEVEMENTS -->
+                    <div class="achievement-item"><div class="achievement-title">作家</div><div class="achievement-desc">创作多部短篇小说和长篇小说，打造原创虚构叙事和创意作品。</div></div>
+                    <div class="achievement-item"><div class="achievement-title">演讲者与导师</div><div class="achievement-desc">举办了15场以上关于伦理与道德价值观的研讨会，参与人数超过500人。</div></div>
+                    <div class="achievement-item"><div class="achievement-title">自动化项目经验</div><div class="achievement-desc">参与多个自动化项目，在嵌入式系统、自动化技术和独立工程项目中获得丰富的实践经验。</div></div>
+                    <div class="achievement-item"><div class="achievement-title">文化志愿者</div><div class="achievement-desc">贡献100多小时的志愿服务活动，向200多名访客介绍孟加拉国文化遗产。</div></div>
+                    <div class="achievement-item"><div class="achievement-title">科技活动组织者</div><div class="achievement-desc">在科技博览会上组织了基于物联网的智能家居演示，吸引了300多名师生参加。</div></div>
                 </div>
                 <div class="main-section">
                     <h2><i class="fas fa-code-branch"></i> 重点项目</h2>
@@ -346,8 +399,26 @@
             }
         }
 
-        // Initialize animations
+        // Password Protection Logic
+        function checkPassword() {
+            const pass = document.getElementById('passwordInput').value;
+            if (pass === '461859') {
+                document.getElementById('passwordOverlay').classList.add('hidden');
+                document.body.classList.add('unlocked');
+            } else {
+                alert('Incorrect password. Please try again.');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+        // Allow pressing "Enter" key to submit password
         document.addEventListener('DOMContentLoaded', function() {
+            const passInput = document.getElementById('passwordInput');
+            passInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+            // Initialize skill bar animations
             const progressBars = document.querySelectorAll('.skill-progress');
             progressBars.forEach((bar, index) => {
                 bar.style.animationDelay = `${index * 0.2}s`;
